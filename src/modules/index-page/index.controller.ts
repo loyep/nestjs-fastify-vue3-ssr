@@ -1,4 +1,5 @@
 import { Controller, Get, Req, Res } from '@nestjs/common'
+import * as querystring from 'querystring'
 import { render } from 'ssr-core-vue3'
 import { Readable } from 'stream'
 import { ApiService } from './index.service'
@@ -10,8 +11,10 @@ export class AppController {
   @Get('/')
   async handlerIndex (@Req() req, @Res() res): Promise<any> {
     try {
+      const request = req.urlData()
+      request.query = querystring.parse(request.query)
       const ctx = {
-        request: req.urlData(),
+        request,
         response: res,
         apiService: this.apiService
       }

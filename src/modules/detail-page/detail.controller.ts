@@ -1,5 +1,5 @@
 import { Controller, Get, Req, Res } from '@nestjs/common'
-import { Request, Response } from 'express'
+import * as querystring from 'querystring'
 import { render } from 'ssr-core-vue3'
 import { Readable } from 'stream'
 import { ApiDetailService } from './detail.service'
@@ -10,10 +10,13 @@ export class DetailController {
   constructor (private readonly apiDeatilservice: ApiDetailService) {}
 
   @Get('/detail/:id')
-  async handlerDetail (@Req() req: Request, @Res() res: Response): Promise<any> {
+  async handlerDetail (@Req() req, @Res() res): Promise<any> {
     try {
+      const request = req.urlData()
+      request.query = querystring.parse(request.query)
+      
       const ctx = {
-        request: req,
+        request,
         response: res,
         apiDeatilservice: this.apiDeatilservice
       }
